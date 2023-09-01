@@ -2,8 +2,9 @@ import Link from "next/link"
 import styles from './Header.module.css';
 
 const pages = [
-    {href:'/', name:'Home'},
-    {href:'/about', name:'Abaut'},
+    {href:'/', name:'На главную'},
+    {href:'/about', name:'О сайте'},
+    {href:'/contact', name:'Контакты'},
 ];
 
 export default function Header(){
