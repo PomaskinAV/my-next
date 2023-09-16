@@ -27,10 +27,8 @@ const UserTable = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const handleSort = (columnName) => {
     if (sortColumn === columnName) {
-      // Если уже сортируем по этому столбцу, измените направление сортировки
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      // Иначе, выберите новый столбец сортировки и установите направление по умолчанию
       setSortColumn(columnName);
       setSortDirection('asc');
     }
@@ -110,7 +108,6 @@ const UserTable = () => {
   };
   
   const sortUsers = (columnName) => {
-    // Клонируйте массив пользователей, чтобы не изменять оригинальный массив
     const sortedUsers = [...users];
   
     sortedUsers.sort((a, b) => {
@@ -124,7 +121,6 @@ const UserTable = () => {
       return valueA - valueB;
     });
   
-    // Если направление сортировки 'desc', переверните массив
     if (sortDirection === 'desc') {
       sortedUsers.reverse();
     }
@@ -145,7 +141,6 @@ const UserTable = () => {
     fetchUsers();
   }, []);
 
-  // Сортировка пользователей
   const sortedUsers = sortUsers(sortColumn);
   
   return (
