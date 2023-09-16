@@ -23,6 +23,18 @@ class ErrorBoundary extends Component {
 
 const UserTable = () => {
   const [users, setUsers] = useState([]);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
+  const handleSort = (columnName) => {
+    if (sortColumn === columnName) {
+      // Если уже сортируем по этому столбцу, измените направление сортировки
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Иначе, выберите новый столбец сортировки и установите направление по умолчанию
+      setSortColumn(columnName);
+      setSortDirection('asc');
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -96,24 +108,63 @@ const UserTable = () => {
       alert('Заполните все поля перед добавлением пользователя.');
     }
   };
+  
+  const sortUsers = (columnName) => {
+    // Клонируйте массив пользователей, чтобы не изменять оригинальный массив
+    const sortedUsers = [...users];
+  
+    sortedUsers.sort((a, b) => {
+      const valueA = a[columnName];
+      const valueB = b[columnName];
+  
+      if (typeof valueA === 'string') {
+        return valueA.localeCompare(valueB, undefined, { sensitivity: 'base' });
+      }
+  
+      return valueA - valueB;
+    });
+  
+    // Если направление сортировки 'desc', переверните массив
+    if (sortDirection === 'desc') {
+      sortedUsers.reverse();
+    }
+  
+    return sortedUsers;
+  };
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Сортировка пользователей
+  const sortedUsers = sortUsers(sortColumn);
+  
   return (
     <div>
       <h1>Таблица пользователей</h1>
       <table>
         <thead>
           <tr>
-          <th>Name</th>
-            <th>Email</th>
-            <th>City</th>
-            <th>Phone</th>
-            <th>Website</th>
-            <th>Company</th>
+          <th onClick={() => handleSort('name')}>Name</th>
+            <th onClick={() => handleSort('email')}>Email</th>
+            <th onClick={() => handleSort('address.city')}>City</th>
+            <th onClick={() => handleSort('phone')}>Phone</th>
+            <th onClick={() => handleSort('website')}>Website</th>
+            <th onClick={() => handleSort('company.name')}>Company</th>
             <th>Action</th> {}
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {sortedUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.email}</td>
